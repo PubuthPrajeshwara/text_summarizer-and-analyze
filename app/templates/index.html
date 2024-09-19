@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text Summarization</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1>Text Summarization</h1>
+        <textarea id="text-input" class="form-control" rows="8" placeholder="Enter text to summarize"></textarea>
+        <button id="summarize-btn" class="btn btn-primary mt-3">Summarize</button>
+
+        <h3 class="mt-5">Summary:</h3>
+        <div id="summary-output" class="mt-2"></div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script>
+        $('#summarize-btn').click(function() {
+            const text = $('#text-input').val();
+            
+            if (!text) {
+                alert('Please enter some text');
+                return;
+            }
+
+            // Send a POST request to the Flask API
+            $.ajax({
+                url: '/summarize',
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({ text: text }),
+                success: function(response) {
+                    $('#summary-output').text(response.summary);
+                },
+                error: function() {
+                    $('#summary-output').text('Error summarizing the text.');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
