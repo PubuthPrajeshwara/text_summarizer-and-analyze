@@ -7,9 +7,17 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
+
     <div class="container mt-5">
         <h1>Text Summarization</h1>
+        
+        <!-- Textarea for text input -->
         <textarea id="text-input" class="form-control" rows="8" placeholder="Enter text to summarize"></textarea>
+
+        <h3 class="mt-3">Or upload a PDF file:</h3>
+        <!-- File input for PDF upload -->
+        <input type="file" id="pdf-upload" class="form-control-file" accept="application/pdf">
+        
         <button id="summarize-btn" class="btn btn-primary mt-3">Summarize</button>
 
         <h3 class="mt-5">Summary:</h3>
@@ -20,25 +28,46 @@
     <script>
         $('#summarize-btn').click(function() {
             const text = $('#text-input').val();
-            
-            if (!text) {
-                alert('Please enter some text');
-                return;
-            }
+            const fileInput = document.getElementById('pdf-upload');
+            const file = fileInput.files[0];
 
-            // Send a POST request to the Flask API
-            $.ajax({
-                url: '/summarize',
-                method: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify({ text: text }),
-                success: function(response) {
-                    $('#summary-output').text(response.summary);
-                },
-                error: function() {
-                    $('#summary-output').text('Error summarizing the text.');
-                }
-            });
+            // Check if a PDF is uploaded
+            if (file) {
+                const formData = new FormData();
+                formData.append('pdf', file);
+
+                // Send PDF file to the server
+                $.ajax({
+                    url: '/summarize_pdf',
+                    method: 'POST',
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    success: function(response) {
+                        $('#summary-output').text(response.summary);
+                    },
+                    error: function() {
+                        $('#summary-output').text('Error summarizing the PDF.');
+                    }
+                });
+
+            } else if (text) {
+                // If there's no PDF but text is entered
+                $.ajax({
+                    url: '/summarize',
+                    method: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ text: text }),
+                    success: function(response) {
+                        $('#summary-output').text(response.summary);
+                    },
+                    error: function() {
+                        $('#summary-output').text('Error summarizing the text.');
+                    }
+                });
+            } else {
+                alert('Please enter text or upload a PDF file.');
+            }
         });
     </script>
 </body>
