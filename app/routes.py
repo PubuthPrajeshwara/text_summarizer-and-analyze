@@ -1,6 +1,6 @@
 from flask import request, jsonify, render_template
 from app import app
-from app.model.model import summarize_text
+from app.model.model import summarize_text, extract_keywords
 import PyPDF2
 import pdfplumber
 import os
@@ -10,6 +10,7 @@ def index():
     # Render the index.html from the templates directory
     return render_template('index.html')
 
+# Route for text summarization
 @app.route('/summarize', methods=['POST'])
 def summarize():
     data = request.json
@@ -43,6 +44,41 @@ def summarize_pdf():
     os.remove(pdf_path)
 
     return jsonify({'summary': summary})
+
+# Route for keyword extraction from text
+@app.route('/extract_keywords', methods=['POST'])
+def extract_keywords_from_text():
+    data = request.json
+    text = data.get('text')
+
+    if not text:
+        return jsonify({'error': 'No text provided'}), 400
+
+    keywords = extract_keywords(text)
+    return jsonify({'keywords': keywords})
+
+# Route for keyword extraction from a PDF
+@app.route('/extract_keywords_pdf', methods=['POST'])
+def extract_keywords_from_pdf():
+    if 'pdf' not in request.files:
+        return jsonify({'error': 'No PDF file provided'}), 400
+
+    pdf_file = request.files['pdf']
+
+    # Save the uploaded file to a temporary location
+    pdf_path = os.path.join("temp_files", pdf_file.filename)
+    pdf_file.save(pdf_path)
+
+    # Extract text from the PDF
+    extracted_text = extract_text_from_pdf(pdf_path)
+
+    # Extract keywords from the extracted text
+    keywords = extract_keywords(extracted_text)
+
+    # Optionally, remove the temporary file after processing
+    os.remove(pdf_path)
+
+    return jsonify({'keywords': keywords})
 
 def extract_text_from_pdf(pdf_path):
     """
