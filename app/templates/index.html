@@ -8,26 +8,70 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"> <!-- Font Awesome -->
     <style>
+        /* Overall Body Styling */
         body {
             font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #f8f9fa, #e2e8f0);
-            height: 100vh;
+            background: linear-gradient(135deg, #1b4d5a, #10354e);
+            min-height: 100vh;
             margin: 0;
             display: flex;
-            justify-content: center;
-            align-items: center;
+            flex-direction: column;
+            justify-content: space-between;
         }
 
+        /* Container Styling */
         .container-fluid {
             display: flex;
             height: 85%;
             width: 85%;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 10px 30px rgba(44, 62, 80, 0.1);
             border-radius: 20px;
             overflow: hidden;
+            margin: 20px auto;
+            background-color: #ffffff;
         }
 
-        /* Left section: Input part */
+        /* Header Styling */
+        header {
+            background-color: #172430; /* Deep Navy */
+            color: #d4af37; /* Soft Gold */
+            padding: 15px 0;
+            top: 0;
+            text-align: center;
+            font-size: 1.8rem;
+            font-weight: 600;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Lottie animation in the header */
+        #lottie-header {
+            position: absolute;
+            top: 4%;
+            right: 32%;
+            transform: translateY(-50%);
+            width: 60px;
+            height: 60px;
+        }
+
+        /* Footer Styling */
+        footer {
+            background-color: #172430; /* Deep Navy */
+            color: #ecf0f1; /* Light Gray */
+            text-align: center;
+            padding: 10px 0;
+            font-size: 0.9rem;
+        }
+
+        footer a {
+            color: #d4af37; /* Soft Gold */
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Left Section: Input Part */
         .left-section {
             width: 50%;
             padding: 30px;
@@ -35,44 +79,93 @@
             display: flex;
             flex-direction: column;
             justify-content: center;
-            border-right: 1px solid #e2e8f0;
-            box-shadow: inset 5px 0 15px rgba(0, 0, 0, 0.05);
+            border-right: 1px solid #bdc3c7; /* Light Gray */
+            box-shadow: inset 5px 0 15px rgba(44, 62, 80, 0.05);
         }
 
         .left-section h1 {
             font-weight: 600;
-            color: #333;
-            margin-bottom: 20px;
+            color: #2c3e50; /* Deep Navy */
+            margin-bottom: 25px;
         }
 
         .left-section textarea,
         .left-section input[type="file"] {
             border-radius: 12px;
             padding: 15px;
-            border: 1px solid #ccc;
-            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.05);
+            border: 1px solid #bdc3c7; /* Light Gray */
+            box-shadow: 0 3px 8px rgba(44, 62, 80, 0.05);
+            background-color: #ffffff;
+            color: #2c3e50; /* Deep Navy */
         }
 
         textarea:focus, input[type="file"]:focus {
             outline: none;
-            border-color: #007bff;
-            box-shadow: 0 0 10px rgba(0, 123, 255, 0.25);
+            border-color: #d4af37; /* Soft Gold */
+            box-shadow: 0 0 10px rgba(212, 175, 55, 0.25);
         }
 
         .left-section .btn {
-            margin-bottom: 10px;
+            margin-bottom: 15px;
             padding: 12px;
             border-radius: 30px;
             font-weight: 600;
             transition: all 0.3s;
+            color: #ffffff;
+            border: none;
         }
 
-        .left-section .btn:hover {
+        .left-section .btn-primary {
+            background-color: #2c3e50; /* Deep Navy */
+        }
+
+        .left-section .btn-primary:hover {
+            background-color: #1a252f;
             transform: scale(1.05);
-            box-shadow: 0 4px 12px rgba(0, 123, 255, 0.2);
+            box-shadow: 0 4px 12px rgba(44, 62, 80, 0.2);
         }
 
-        /* Right section: Output part */
+        .left-section .btn-secondary {
+            background-color: #95a5a6; /* Soft Black */
+        }
+
+        .left-section .btn-secondary:hover {
+            background-color: #7f8c8d;
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(44, 62, 80, 0.2);
+        }
+
+        .left-section .btn-info {
+            background-color: #2980b9; /* Muted Blue */
+        }
+
+        .left-section .btn-info:hover {
+            background-color: #1c5980;
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(44, 62, 80, 0.2);
+        }
+
+        .left-section .btn-success {
+            background-color: #27ae60; /* Elegant Green */
+        }
+
+        .left-section .btn-success:hover {
+            background-color: #1e8449;
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(44, 62, 80, 0.2);
+        }
+
+        .left-section .btn-warning {
+            background-color: #d4af37; /* Soft Gold */
+        }
+
+        .left-section .btn-warning:hover {
+            background-color: #b3922c;
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(44, 62, 80, 0.2);
+        }
+
+        /* Right Section: Output Part */
         .right-section {
             width: 50%;
             padding: 30px;
@@ -85,35 +178,49 @@
 
         .right-section h3 {
             font-weight: 600;
-            color: #333;
+            color: #2c3e50; /* Deep Navy */
             margin-bottom: 20px;
         }
 
         #output {
-            border: 1px solid #007bff;
+            border: 1px solid #2c3e50; /* Deep Navy */
             padding: 20px;
             border-radius: 15px;
             background-color: #ffffff;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 12px rgba(44, 62, 80, 0.1);
             margin-top: 20px;
             min-height: 50px;
             overflow-y: auto;
             flex-grow: 1;
+            color: #2c3e50; /* Deep Navy */
         }
 
-        #loading {
-            display: none; /* Initially hide the loading spinner */
+        /* Style for Lottie loading animation */
+        #loading-lottie {
+            display: none;
+            width: 180px;
+            height: 180px;
+            margin: auto;
         }
 
-        /* Style for loading spinner */
-        #loading.spinner-border {
-            color: #007bff;
+        /* Copy Button Styling */
+        #copy-btn {
+            background-color: #2c3e50; /* Deep Navy */
+            color: #ffffff;
+            border: none;
         }
 
-        /* Responsive adjustments */
+        #copy-btn:hover {
+            background-color: #1a252f;
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(44, 62, 80, 0.2);
+        }
+
+        /* Responsive Adjustments */
         @media (max-width: 768px) {
             .container-fluid {
                 flex-direction: column;
+                height: auto;
             }
 
             .left-section, .right-section {
@@ -128,8 +235,14 @@
 </head>
 <body>
 
+    <!-- Header -->
+    <header>
+        Insight Crew Text Analysis Application
+        <div id="lottie-header" style="width: 60px; height: 60px; margin: auto;"></div> <!-- Lottie container in the header -->
+    </header>
+
     <div class="container-fluid">
-        <!-- Left section: Input part -->
+        <!-- Left Section: Input Part -->
         <div class="left-section">
             <h1>Text Analysis</h1>
             
@@ -140,23 +253,20 @@
                 </button>
             </div>
 
-            <h3>Or upload a PDF file:</h3>
+            <h3 class="mt-4">Or upload a PDF file:</h3>
             <input type="file" id="pdf-upload" class="form-control-file mb-3" accept="application/pdf">
 
             <button id="summarize-btn" class="btn btn-primary mt-3" data-action="summarize">Summarize</button>
             <button id="sentiment-btn" class="btn btn-info mt-3" data-action="analyze_sentiment">Sentiment Analyze</button>
             <button id="topic-btn" class="btn btn-success mt-3" data-action="topic">Topic Generate</button>
-            <button id="keyword-btn" class="btn btn-warning mt-3" data-action="extract_keywords">Keyword Generate</button> <!-- Updated action -->
-
+            <button id="keyword-btn" class="btn btn-warning mt-3" data-action="extract_keywords">Keyword Generate</button>
         </div>
 
-        <!-- Right section: Output part -->
+        <!-- Right Section: Output Part -->
         <div class="right-section">
             <h3>Output:</h3>
             <div id="output">
-                <div id="loading" class="spinner-border mt-3" role="status">
-                    <span class="sr-only">Loading...</span>
-                </div>
+                <div id="loading-lottie"></div>
             </div> <!-- Output container -->
             <button id="copy-btn" class="btn btn-secondary mt-3">
                 <i class="fas fa-copy"></i> Copy
@@ -164,9 +274,33 @@
         </div>
     </div>
 
+    <!-- Footer -->
+    <footer>
+        &copy; 2024 Text Analysis App. Developed by <a href="#">Insight crew</a>. All rights reserved.
+    </footer>
+
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.7.6/lottie.min.js"></script>
     <script>
         $(document).ready(function() {
+            // Lottie animation in the header
+            lottie.loadAnimation({
+                container: document.getElementById('lottie-header'), // Container for the animation
+                renderer: 'svg',
+                loop: true,
+                autoplay: false,
+                path: 'https://lottie.host/7d4819f6-6ed1-4a96-a802-4cb8aa45f23a/I5WTGToKNT.json'
+            });
+
+            // Lottie animation for loading
+            const loadingAnimation = lottie.loadAnimation({
+                container: document.getElementById('loading-lottie'), // Loading spinner container
+                renderer: 'svg',
+                loop: true,
+                autoplay: false, // Initially set to false
+                path: 'https://lottie.host/2be02714-c061-46f9-acdf-fbf3f491ace5/9O6afdEcTF.json' // URL to Lottie loading spinner animation
+            });
+
             // Paste text into the textarea
             $('#paste-btn').click(function() {
                 navigator.clipboard.readText().then(text => {
@@ -175,31 +309,38 @@
                     console.error('Failed to read clipboard contents: ', err);
                 });
             });
-    
+
             // Copy text from the output area
             $('#copy-btn').click(function() {
-                const outputText = $('#output').text();
-                navigator.clipboard.writeText(outputText).then(() => {
-                    alert('Output copied to clipboard!');
-                }).catch(err => {
-                    console.error('Failed to copy text: ', err);
-                });
+                const outputText = $('#output').text().trim();
+                if (outputText) {
+                    navigator.clipboard.writeText(outputText).then(() => {
+                        alert('Output copied to clipboard!');
+                    }).catch(err => {
+                        console.error('Failed to copy text: ', err);
+                    });
+                } else {
+                    alert('Nothing to copy!');
+                }
             });
-    
+
             $('button[data-action]').click(function() {
                 const action = $(this).data('action'); // Get action from data attribute
                 const text = $('#text-input').val();
                 const fileInput = document.getElementById('pdf-upload');
                 const file = fileInput.files[0];
     
-                // Show loading spinner
-                $('#loading').show();
+                // Show loading animation
+                loadingAnimation.goToAndPlay(0); // Start the Lottie animation
+                $('#loading-lottie').show(); // Display the loading container
     
                 // Check if a file is uploaded
+                let url;
+                let data;
                 if (file) {
                     const formData = new FormData();
                     formData.append('pdf', file);
-                    url = action === 'extract_keywords' ? '/extract_keywords_pdf' : '/summarize_pdf'; // Choose based on action
+                    url = action === 'analyze_sentiment' ? '/analyze_sentiment_pdf' : (action === 'extract_keywords' ? '/extract_keywords_pdf' : '/summarize_pdf');
                     data = formData;
                 } else if (text) {
                     url = '/' + action; // Dynamic URL based on action
@@ -224,7 +365,8 @@
                         $('#output').text('Error processing the request.');
                     },
                     complete: function() {
-                        $('#loading').hide(); // Hide spinner after request completes
+                        $('#loading-lottie').hide(); // Hide loading animation after request completes
+                        loadingAnimation.pause(); // Stop the Lottie animation
                     }
                 };
     
@@ -233,11 +375,11 @@
             });
     
             function handleResponse(response) {
-                const output = response.summary || response.sentiment || response.result || response.keywords?.join(', ') || 'No output received.';
-                $('#output').hide().text(output).fadeIn(500); // Handle keyword output
+                const output = response.summary || response.sentiment || response.result || response.keywords?.join(', ');
+                $('#output').text(output);
             }
+
         });
     </script>
-    
 </body>
 </html>

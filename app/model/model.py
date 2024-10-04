@@ -1,4 +1,4 @@
-from transformers import T5Tokenizer, T5ForConditionalGeneration, BertTokenizer, BertForTokenClassification
+from transformers import T5Tokenizer, T5ForConditionalGeneration, BertTokenizer, BertForTokenClassification, DistilBertTokenizer, DistilBertForSequenceClassification
 import torch
 import logging
 
@@ -23,10 +23,16 @@ bert_model_name = './app/model/fine_tuned_bert_keyword_extraction'
 bert_tokenizer = BertTokenizer.from_pretrained(bert_model_name)
 bert_model = BertForTokenClassification.from_pretrained(bert_model_name)
 
+# Load the fine-tuned sentiment analysis model and tokenizer for DistilBERT
+sentiment_model_name = './app/model/fine_tuned_sentiment_model'
+sentiment_tokenizer = DistilBertTokenizer.from_pretrained(sentiment_model_name)
+sentiment_model = DistilBertForSequenceClassification.from_pretrained(sentiment_model_name)
+
 # Set up the device for both models
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 t5_model = t5_model.to(device)
 bert_model = bert_model.to(device)
+sentiment_model = sentiment_model.to(device)
 
 # Function to summarize text using T5
 def summarize_text(text):
@@ -96,3 +102,26 @@ def extract_keywords(text):
 
         return keywords
 
+# Function to perform sentiment analysis
+def analyze_sentiment(text):
+    # Tokenize and encode the input text
+    inputs = sentiment_tokenizer.encode_plus(
+        text,
+        return_tensors="pt",
+        max_length=512,
+        truncation=True,
+        padding="max_length"
+    )
+    input_ids = inputs['input_ids'].to(device)
+    attention_mask = inputs['attention_mask'].to(device)
+
+    # Get model predictions
+    with torch.no_grad():
+        outputs = sentiment_model(input_ids=input_ids, attention_mask=attention_mask)
+        logits = outputs.logits
+        predictions = torch.argmax(logits, dim=1).cpu().numpy()
+
+    # Map predictions to sentiment labels (assuming binary classification: 0=Negative, 1=Positive)
+    sentiment_label = "Positive" if predictions[0] == 1 else "Negative"
+
+    return sentiment_label

@@ -1,6 +1,6 @@
 from flask import request, jsonify, render_template
 from app import app
-from app.model.model import summarize_text, extract_keywords
+from app.model.model import summarize_text, extract_keywords, analyze_sentiment
 import PyPDF2
 import pdfplumber
 import os
@@ -96,3 +96,38 @@ def extract_text_from_pdf(pdf_path):
     #         text += page.extract_text()
 
     return text
+
+# Route for sentiment analysis from text input
+@app.route('/analyze_sentiment', methods=['POST'])
+def analyze_sentiment_from_text():
+    data = request.json
+    text = data.get('text')
+
+    if not text:
+        return jsonify({'error': 'No text provided'}), 400
+
+    sentiment = analyze_sentiment(text)
+    return jsonify({'sentiment': sentiment})
+
+# Route for sentiment analysis from a PDF file
+@app.route('/analyze_sentiment_pdf', methods=['POST'])
+def analyze_sentiment_from_pdf():
+    if 'pdf' not in request.files:
+        return jsonify({'error': 'No PDF file provided'}), 400
+
+    pdf_file = request.files['pdf']
+
+    # Save the uploaded file to a temporary location
+    pdf_path = os.path.join("temp_files", pdf_file.filename)
+    pdf_file.save(pdf_path)
+
+    # Extract text from the PDF
+    extracted_text = extract_text_from_pdf(pdf_path)
+
+    # Perform sentiment analysis on the extracted text
+    sentiment = analyze_sentiment(extracted_text)
+
+    # Optionally, remove the temporary file after processing
+    os.remove(pdf_path)
+
+    return jsonify({'sentiment': sentiment})
