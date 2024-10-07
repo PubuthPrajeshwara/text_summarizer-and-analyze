@@ -1,6 +1,6 @@
 from flask import request, jsonify, render_template
 from app import app
-from app.model.model import summarize_text, extract_keywords, analyze_sentiment
+from app.model.model import summarize_text, extract_keywords, analyze_sentiment, generate_topic
 import PyPDF2
 import pdfplumber
 import os
@@ -131,3 +131,38 @@ def analyze_sentiment_from_pdf():
     os.remove(pdf_path)
 
     return jsonify({'sentiment': sentiment})
+
+# Route for topic generation from text input
+@app.route('/generate_topic', methods=['POST'])
+def generate_topic_from_text():
+    data = request.json
+    text = data.get('text')
+
+    if not text:
+        return jsonify({'error': 'No text provided'}), 400
+
+    topic = generate_topic(text)
+    return jsonify({'topic': topic})
+
+# Route for topic generation from a PDF file
+@app.route('/generate_topic_pdf', methods=['POST'])
+def generate_topic_from_pdf():
+    if 'pdf' not in request.files:
+        return jsonify({'error': 'No PDF file provided'}), 400
+
+    pdf_file = request.files['pdf']
+
+    # Save the uploaded file to a temporary location
+    pdf_path = os.path.join("temp_files", pdf_file.filename)
+    pdf_file.save(pdf_path)
+
+    # Extract text from the PDF
+    extracted_text = extract_text_from_pdf(pdf_path)
+
+    # Generate a topic for the extracted text
+    topic = generate_topic(extracted_text)
+
+    # Optionally, remove the temporary file after processing
+    os.remove(pdf_path)
+
+    return jsonify({'topic': topic})

@@ -1,4 +1,4 @@
-from transformers import T5Tokenizer, T5ForConditionalGeneration, BertTokenizer, BertForTokenClassification, DistilBertTokenizer, DistilBertForSequenceClassification
+from transformers import T5Tokenizer, T5ForConditionalGeneration, BertTokenizer, BertForTokenClassification, DistilBertTokenizer, DistilBertForSequenceClassification, BartForConditionalGeneration, BartTokenizer
 import torch
 import logging
 
@@ -28,11 +28,17 @@ sentiment_model_name = './app/model/fine_tuned_sentiment_model'
 sentiment_tokenizer = DistilBertTokenizer.from_pretrained(sentiment_model_name)
 sentiment_model = DistilBertForSequenceClassification.from_pretrained(sentiment_model_name)
 
+# Load the pre-trained BART model and tokenizer for topic generation
+bart_model_name = "facebook/bart-large-cnn"
+bart_tokenizer = BartTokenizer.from_pretrained(bart_model_name)
+bart_model = BartForConditionalGeneration.from_pretrained(bart_model_name)
+
 # Set up the device for both models
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 t5_model = t5_model.to(device)
 bert_model = bert_model.to(device)
 sentiment_model = sentiment_model.to(device)
+bart_model = bart_model.to(device)
 
 # Function to summarize text using T5
 def summarize_text(text):
@@ -125,3 +131,26 @@ def analyze_sentiment(text):
     sentiment_label = "Positive" if predictions[0] == 1 else "Negative"
 
     return sentiment_label
+
+
+# Function to generate topics using BART
+def generate_topic(input_text):
+    # Tokenize and encode the input text
+    inputs = bart_tokenizer(input_text, return_tensors="pt", max_length=1024, truncation=True)
+    inputs = inputs.to(device)
+
+    # Generate a summary (topic)
+    summary_ids = bart_model.generate(
+        inputs["input_ids"],
+        max_length=10,  # Limit the output length for topic generation
+        min_length=2,  # Set a min_length to avoid warning (adjust as needed)
+        num_beams=4,  # Beam search to improve the quality of generation
+        early_stopping=True
+    )
+
+    # Decode the output
+    summary = bart_tokenizer.decode(summary_ids[0], skip_special_tokens=True)
+
+    logger.debug(f"Generated summary: {summary}")
+
+    return summary

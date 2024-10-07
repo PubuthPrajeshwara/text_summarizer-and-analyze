@@ -258,7 +258,7 @@
 
             <button id="summarize-btn" class="btn btn-primary mt-3" data-action="summarize">Summarize</button>
             <button id="sentiment-btn" class="btn btn-info mt-3" data-action="analyze_sentiment">Sentiment Analyze</button>
-            <button id="topic-btn" class="btn btn-success mt-3" data-action="topic">Topic Generate</button>
+            <button id="topic-btn" class="btn btn-success mt-3" data-action="generate_topic">Topic Generate</button>
             <button id="keyword-btn" class="btn btn-warning mt-3" data-action="extract_keywords">Keyword Generate</button>
         </div>
 
@@ -291,7 +291,7 @@
                 autoplay: false,
                 path: 'https://lottie.host/7d4819f6-6ed1-4a96-a802-4cb8aa45f23a/I5WTGToKNT.json'
             });
-
+    
             // Lottie animation for loading
             const loadingAnimation = lottie.loadAnimation({
                 container: document.getElementById('loading-lottie'), // Loading spinner container
@@ -300,7 +300,7 @@
                 autoplay: false, // Initially set to false
                 path: 'https://lottie.host/2be02714-c061-46f9-acdf-fbf3f491ace5/9O6afdEcTF.json' // URL to Lottie loading spinner animation
             });
-
+    
             // Paste text into the textarea
             $('#paste-btn').click(function() {
                 navigator.clipboard.readText().then(text => {
@@ -309,7 +309,7 @@
                     console.error('Failed to read clipboard contents: ', err);
                 });
             });
-
+    
             // Copy text from the output area
             $('#copy-btn').click(function() {
                 const outputText = $('#output').text().trim();
@@ -323,24 +323,24 @@
                     alert('Nothing to copy!');
                 }
             });
-
+    
             $('button[data-action]').click(function() {
                 const action = $(this).data('action'); // Get action from data attribute
                 const text = $('#text-input').val();
                 const fileInput = document.getElementById('pdf-upload');
                 const file = fileInput.files[0];
-    
+        
                 // Show loading animation
                 loadingAnimation.goToAndPlay(0); // Start the Lottie animation
                 $('#loading-lottie').show(); // Display the loading container
-    
+        
                 // Check if a file is uploaded
                 let url;
                 let data;
                 if (file) {
                     const formData = new FormData();
                     formData.append('pdf', file);
-                    url = action === 'analyze_sentiment' ? '/analyze_sentiment_pdf' : (action === 'extract_keywords' ? '/extract_keywords_pdf' : '/summarize_pdf');
+                    url = action === 'analyze_sentiment' ? '/analyze_sentiment_pdf' : (action === 'extract_keywords' ? '/extract_keywords_pdf' : (action === 'generate_topic' ? '/generate_topic_pdf' : '/summarize_pdf'));
                     data = formData;
                 } else if (text) {
                     url = '/' + action; // Dynamic URL based on action
@@ -350,7 +350,7 @@
                     $('#loading').hide(); // Hide loading spinner if no input
                     return; // Exit the function if no valid input
                 }
-    
+        
                 // Determine AJAX request settings
                 const ajaxSettings = {
                     url: url,
@@ -359,6 +359,7 @@
                     processData: !file,
                     data: data,
                     success: function(response) {
+                        console.log(response);
                         handleResponse(response); // Handle response
                     },
                     error: function() {
@@ -369,16 +370,27 @@
                         loadingAnimation.pause(); // Stop the Lottie animation
                     }
                 };
-    
+        
                 // Send AJAX request
                 $.ajax(ajaxSettings);
             });
-    
+        
             function handleResponse(response) {
-                const output = response.summary || response.sentiment || response.result || response.keywords?.join(', ');
+                let output = '';
+                if (response.summary) {
+                    output = response.summary;
+                } else if (response.sentiment) {
+                    output = response.sentiment;
+                } else if (response.keywords) {
+                    output = response.keywords.join(', ');
+                } else if (response.topic) {
+                    output = response.topic; // Adjust this based on your response format
+                } else {
+                    output = 'No valid output received.';
+                }
                 $('#output').text(output);
             }
-
+    
         });
     </script>
 </body>
